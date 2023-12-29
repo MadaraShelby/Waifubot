@@ -1,3 +1,4 @@
+Sukuna:
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -66,6 +67,7 @@ async def trade(client, message):
 
 
 @Grabberu.on_callback_query(filters.create(lambda _, __, query: query.data in ["confirm_trade", "cancel_trade"]))
+
 async def on_callback_query(client, callback_query):
     receiver_id = callback_query.from_user.id
 
@@ -105,7 +107,7 @@ async def on_callback_query(client, callback_query):
         
         del pending_trades[(sender_id, receiver_id)]
 
-        await callback_query.message.edit_text(f"You have successfully traded your character with {callback_query.message.reply_to_message.from_user.mention}!")
+await callback_query.message.edit_text(f"You have successfully traded your character with {callback_query.message.reply_to_message.from_user.mention}!")
 
     elif callback_query.data == "cancel_trade":
         
@@ -158,12 +160,14 @@ async def gift(client, message):
 
     
     keyboard = InlineKeyboardMarkup(
-keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("ᴄᴏɴғɪʀᴍ ɢɪғᴛ🎁", callback_data="confirm_gift")],
             [InlineKeyboardButton("ᴄᴀɴᴄᴇʟ ɢɪғᴛ❌", callback_data="cancel_gift")]
         ]
     )
+
+    await message.reply_text(f"do You Really Wanns To Gift {message.reply_to_message.from_user.mention} ?", reply_markup=keyboard)
+
 @Grabberu.on_callback_query(filters.create(lambda _, __, query: query.data in ["confirm_gift", "cancel_gift"]))
 async def on_callback_query(client, callback_query):
     sender_id = callback_query.from_user.id
@@ -200,6 +204,4 @@ async def on_callback_query(client, callback_query):
         
         del pending_gifts[(sender_id, receiver_id)]
 
-        await callback_query.message.edit_text(f"You have successfully gifted your character to [{gift['receiver_first_name']}](tg://user?id={receiver_id})!")
-
-
+        await callback_query.message.edit_text(f"You have successfully gifted your character to {gift['receiver_first_name']}!")
