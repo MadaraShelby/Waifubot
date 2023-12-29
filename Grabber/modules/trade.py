@@ -106,7 +106,7 @@ async def on_callback_query(client, callback_query):
         
         del pending_trades[(sender_id, receiver_id)]
 
-await callback_query.message.edit_text(f"You have successfully traded your character with {callback_query.message.reply_to_message.from_user.mention}!")
+        await callback_query.message.edit_text(f"You have successfully traded your character with {callback_query.message.reply_to_message.from_user.mention}!")
 
     elif callback_query.data == "cancel_trade":
         
@@ -203,4 +203,4 @@ async def on_callback_query(client, callback_query):
         
         del pending_gifts[(sender_id, receiver_id)]
 
-        await callback_query.message.edit_text(f"You have successfully gifted your character to {gift['receiver_first_name']}!")
+        await callback_query.message.edit_text(f"You have successfully gifted your character to [{gift['receiver_first_name']}](tg://user?id={receiver_id})!")
