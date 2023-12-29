@@ -209,32 +209,37 @@ async def guess(update: Update, context: CallbackContext) -> None:
 async def fav(update: Update, context: CallbackContext) -> None:
     user_id = update.effective_user.id
 
-    
+    # Check if the user provided a character ID
     if not context.args:
-        await update.message.reply_text('Please provide Character id...')
+        await update.message.reply_text('Please provide a Character ID...')
         return
 
     character_id = context.args[0]
 
-    
+    # Retrieve user data from the collection
     user = await user_collection.find_one({'id': user_id})
     if not user:
-        await update.message.reply_text('You have not Guessed any characters yet....')
+        await update.message.reply_text('You have not guessed any characters yet...')
         return
 
-
+    # Find the character in the user's collection
     character = next((c for c in user['characters'] if c['id'] == character_id), None)
     if not character:
-        await update.message.reply_text('This Character is Not In your collection')
+        await update.message.reply_text('This character is not in your collection')
         return
 
-    
+    # Update user's favorites with the character ID
     user['favorites'] = [character_id]
 
-    
+    # Update the database with the user's favorites
     await user_collection.update_one({'id': user_id}, {'$set': {'favorites': user['favorites']}})
 
-    await update.message.reply_text(f'Character {character["name"]} has been added to your favorite...')
+    # Send the character's photo along with the confirmation message
+    photo_url = character.get('img_url')  # Assuming 'img_url' contains the character's photo URL
+    if photo_url:
+        await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo_url, caption=f'Character {character["name"]} has been added to your favorites!')
+    else:
+        await update.message.reply_text(f'Character {character["name"]} has been added to your favorites!')
     
 
 def main() -> None:
