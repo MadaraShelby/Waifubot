@@ -33,7 +33,7 @@ img_url character-name anime-name rarity-number
 
 use rarity number accordingly rarity Map
 
-rarity_map = 1 (⚪️ Common), 2 (🟣 Rare) , 3 (🟡 Legendary), 4 (🟢 Medium)""")
+rarity_map = 1 (⚪️ Common), 2 (🟣 Rare) , 3 (🟡 Legendary), 4 (🟢 Medium) 5 (💮 Special edition)""")
 
             
             return
@@ -47,7 +47,7 @@ rarity_map = 1 (⚪️ Common), 2 (🟣 Rare) , 3 (🟡 Legendary), 4 (🟢 Medi
             await update.message.reply_text('Invalid URL.')
             return
 
-        rarity_map = {1: "⚪ Common", 2: "🟣 Rare", 3: "🟡 Legendary", 4: "🟢 Medium"}
+        rarity_map = {1: "⚪ Common", 2: "🟣 Rare", 3: "🟡 Legendary", 4: "🟢 Medium", 5: "💮 Special edition"} 
         try:
             rarity = rarity_map[int(args[3])]
         except KeyError:
@@ -112,7 +112,7 @@ async def update(update: Update, context: CallbackContext) -> None:
         if len(args) != 3:
             await update.message.reply_text('Incorrect format. Please use: /update id field new_value')
             return
-
+           
         # Get character by ID
         character = await collection.find_one({'id': args[0]})
         if not character:
@@ -164,9 +164,56 @@ async def update(update: Update, context: CallbackContext) -> None:
     except Exception as e:
         await update.message.reply_text(f'I guess did not added bot in channel.. or character uploaded Long time ago.. Or character not exits.. orr Wrong id')
 
+import asyncio
+from telegram import Update
+from telegram.ext import CommandHandler, CallbackContext
+from Grabber import collection
+
+import asyncio
+from telegram import Update
+from telegram.ext import CommandHandler, CallbackContext
+from Grabber import collection
+
+async def check_character(update: Update, context: CallbackContext) -> None:
+    try:
+        args = context.args
+        if len(args) != 1:
+            await update.message.reply_text('Incorrect format. Please use: /check character_id')
+            return
+
+        character_id = args[0]
+        character = await collection.find_one({'id': character_id})
+
+        if character:
+            response_message = (
+                f"Character Name: {character['name']}\n"
+                f"Anime: {character['anime']}\n"
+                f"Rarity: {character['rarity']}\n"
+                f"Character ID: {character['id']}\n"
+            )
+
+            await context.bot.send_photo(
+                chat_id=update.effective_chat.id,
+                photo=character['img_url'],
+                caption=response_message
+            )
+        else:
+            await update.message.reply_text('Character not found.')
+
+    except Exception as e:
+        await update.message.reply_text(f'Error: {str(e)}')
+
+CHECK_HANDLER = CommandHandler('check', check_character, block=False)
+application.add_handler(CHECK_HANDLER)
 UPLOAD_HANDLER = CommandHandler('upload', upload, block=False)
 application.add_handler(UPLOAD_HANDLER)
 DELETE_HANDLER = CommandHandler('delete', delete, block=False)
 application.add_handler(DELETE_HANDLER)
 UPDATE_HANDLER = CommandHandler('update', update, block=False)
 application.add_handler(UPDATE_HANDLER)
+
+
+import asyncio
+from telegram import Update
+from telegram.ext import CommandHandler, CallbackContext
+from Grabber import collection
