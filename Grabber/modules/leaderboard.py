@@ -209,7 +209,7 @@ async def global_leaderboard(update: Update, context: CallbackContext) -> None:
         leaderboard_message += f'{i}. <b>{group_name}</b> ➾ <b>{count}</b>\n'
     
     
-    photo_url = "https://telegra.ph/file/1d9c963d5a138dc3c3077.jpg"  # Your photo URL
+    photo_url = "https://telegra.ph/file/fe819714702ffe12381b3.jpg"  # Your photo URL
 
     await update.message.reply_photo(photo=photo_url, caption=leaderboard_message, parse_mode='HTML')
 
@@ -261,7 +261,7 @@ async def ctop(update: Update, context: CallbackContext) -> None:
         character_count = user['character_count']
         leaderboard_message += f'{i}. <a href="https://t.me/{username}"><b>{first_name}</b></a> ➾ <b>{character_count}</b>\n'
     
-    photo_url = "https://telegra.ph/file/1d9c963d5a138dc3c3077.jpg"  # Your photo URL
+    photo_url = "https://telegra.ph/file/fe819714702ffe12381b3.jpg"  # Your photo URL
 
     await update.message.reply_photo(photo=photo_url, caption=leaderboard_message, parse_mode='HTML')
 
@@ -285,7 +285,7 @@ async def leaderboard(update: Update, context: CallbackContext) -> None:
         character_count = user['character_count']
         leaderboard_message += f'{i}. <a href="https://t.me/{username}"><b>{first_name}</b></a> ➾ <b>{character_count}</b>\n'
     
-    photo_url = "https://telegra.ph/file/1d9c963d5a138dc3c3077.jpg"  # Your photo URL
+    photo_url = "https://telegra.ph/file/fe819714702ffe12381b3.jpg"  # Your photo URL
 
     await update.message.reply_photo(photo=photo_url, caption=leaderboard_message, parse_mode='HTML')
 
