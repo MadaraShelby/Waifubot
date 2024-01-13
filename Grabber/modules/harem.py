@@ -1,13 +1,11 @@
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from itertools import groupby
-import urllib.request
-import re
-import math
-from html import escape 
+from html import escape
 import random
+import math
 
-from telegram.ext import CommandHandler, CallbackContext, CallbackQueryHandler
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import CommandHandler, CallbackContext, CallbackQueryHandler, InlineQueryHandler
+from telegram import InlineQueryResultArticle, InputTextMessageContent
 
 from Grabber import collection, user_collection, application
 
