@@ -11,6 +11,53 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 from Grabber import collection, user_collection, application
 
+rarities_map = {
+    1: '⚪️ Common',
+    2: '🟣 Rare',
+    3: '🟡 Legendary',
+    4: '🟢 Medium',
+    5: '💮 Special edition'
+}
+
+async def hmode(update: Update, context: CallbackContext) -> None:
+    keyboard = [
+        [InlineKeyboardButton(rarity, callback_data=f"hmode:{rarity}") for rarity in rarities_map.values()]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Select a rarity:", reply_markup=reply_markup)
+
+async def hmode_callback(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    data = query.data
+    _, rarity = data.split(':')
+
+    user_id = update.effective_user.id
+    user = await user_collection.find_one({'id': user_id})
+    
+    if not user:
+        await query.answer("You haven't guessed any characters yet.", show_alert=True)
+        return
+
+    rarity_code = [key for key, value in rarities_map.items() if value == rarity]
+    if not rarity_code:
+        await query.answer("Invalid rarity.", show_alert=True)
+        return
+
+    rarity_code = rarity_code[0]
+
+    characters_of_rarity = [character for character in user['characters'] if character['rarity'] == rarity_code]
+
+    if characters_of_rarity:
+        harem_message = f"<b>{escape(update.effective_user.first_name)}'s {rarity} Characters</b>\n"
+        character_counts = {k: len(list(v)) for k, v in groupby(characters_of_rarity, key=lambda x: x['id'])}
+
+        for character in characters_of_rarity:
+            count = character_counts[character['id']]
+            harem_message += f'{character["id"]} {character["name"]} ×{count}\n'
+
+        total_count = len(characters_of_rarity)
+        await query.message.reply_text(harem_message, parse_mode='HTML')
+
 async def harem(update: Update, context: CallbackContext, page=0) -> None:
     user_id = update.effective_user.id
 
@@ -138,3 +185,6 @@ application.add_handler(CommandHandler(["harem", "collection"], harem,block=Fals
 harem_handler = CallbackQueryHandler(harem_callback, pattern='^harem', block=False)
 application.add_handler(harem_handler)
     
+application.add_handler(CommandHandler("hmode", hmode, block=False))
+hmode_handler = CallbackQueryHandler(hmode_callback, pattern='^hmode:', block=False)
+application.add_handler(hmode_handler)
